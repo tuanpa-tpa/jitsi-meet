@@ -351,8 +351,11 @@ class WelcomePage extends AbstractWelcomePage<IProps> {
 
         const { fDroidUrl, downloadLink: androidDownloadLink } = android;
 
-        return (<footer className = 'welcome-footer'>
-            <div className = 'welcome-footer-centered'>
+        return (
+            <>
+            
+        <footer className = 'welcome-footer'>
+            {/* <div className = 'welcome-footer-centered'>
                 <div className = 'welcome-footer-padded'>
                     <div className = 'welcome-footer-row-block welcome-footer--row-1'>
                         <div className = 'welcome-footer-row-1-text'>{t('welcomepage.jitsiOnMobile')}</div>
@@ -379,8 +382,10 @@ class WelcomePage extends AbstractWelcomePage<IProps> {
                         </a>
                     </div>
                 </div>
-            </div>
-        </footer>);
+            </div> */}
+        </footer>
+            </>
+        );
     }
 
     /**

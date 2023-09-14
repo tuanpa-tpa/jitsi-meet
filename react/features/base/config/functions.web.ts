@@ -100,9 +100,9 @@ export function _setDeeplinkingDefaults(deeplinking: IDeeplinkingConfig) {
         ios = {} as IDeeplinkingMobileConfig
     } = deeplinking;
 
-    desktop.appName = desktop.appName || 'Jitsi Meet';
+    desktop.appName ='CMeet';
 
-    ios.appName = ios.appName || 'Jitsi Meet';
+    ios.appName = ios.appName || 'CMeet';
     ios.appScheme = ios.appScheme || 'org.jitsi.meet';
     ios.downloadLink = ios.downloadLink
         || 'https://itunes.apple.com/us/app/jitsi-meet/id1165103905';
@@ -113,7 +113,7 @@ export function _setDeeplinkingDefaults(deeplinking: IDeeplinkingConfig) {
         ios.dynamicLink.isi = ios.dynamicLink.isi || '1165103905';
     }
 
-    android.appName = android.appName || 'Jitsi Meet';
+    android.appName = android.appName || 'CMeet';
     android.appScheme = android.appScheme || 'org.jitsi.meet';
     android.downloadLink = android.downloadLink
         || 'https://play.google.com/store/apps/details?id=org.jitsi.meet';
