@@ -1,6 +1,6 @@
-import { IReduxState } from '../../app/types';
-import JitsiMeetJS from '../../base/lib-jitsi-meet';
-import { NOTIFY_CLICK_MODE } from '../../toolbox/constants';
+import { IReduxState } from "../../app/types";
+import JitsiMeetJS from "../../base/lib-jitsi-meet";
+import { NOTIFY_CLICK_MODE } from "../../toolbox/constants";
 
 import {
     IConfig,
@@ -8,11 +8,11 @@ import {
     IDeeplinkingMobileConfig,
     IDeeplinkingPlatformConfig,
     NotifyClickButton,
-    ToolbarButton
-} from './configType';
-import { TOOLBAR_BUTTONS } from './constants';
+    ToolbarButton,
+} from "./configType";
+import { TOOLBAR_BUTTONS } from "./constants";
 
-export * from './functions.any';
+export * from "./functions.any";
 
 /**
  * Removes all analytics related options from the given configuration, in case of a libre build.
@@ -31,7 +31,7 @@ export function _cleanupConfig(_config: IConfig) {
  * @returns {boolean}
  */
 export function getReplaceParticipant(state: IReduxState): string | undefined {
-    return state['features/base/config'].replaceParticipant;
+    return state["features/base/config"].replaceParticipant;
 }
 
 /**
@@ -41,13 +41,16 @@ export function getReplaceParticipant(state: IReduxState): string | undefined {
  * @returns {Array<string>} - The list of enabled toolbar buttons.
  */
 export function getToolbarButtons(state: IReduxState): Array<string> {
-    const { toolbarButtons, customToolbarButtons } = state['features/base/config'];
+    const { toolbarButtons, customToolbarButtons } =
+        state["features/base/config"];
     const customButtons = customToolbarButtons?.map(({ id }) => id);
 
-    const buttons = Array.isArray(toolbarButtons) ? toolbarButtons : TOOLBAR_BUTTONS;
+    const buttons = Array.isArray(toolbarButtons)
+        ? toolbarButtons
+        : TOOLBAR_BUTTONS;
 
     if (customButtons) {
-        buttons.push(...customButtons as ToolbarButton[]);
+        buttons.push(...(customButtons as ToolbarButton[]));
     }
 
     return buttons;
@@ -60,7 +63,7 @@ export function getToolbarButtons(state: IReduxState): Array<string> {
  * @returns {boolean} True if web-hid feature should be enabled, otherwise false.
  */
 export function getWebHIDFeatureConfig(state: IReduxState): boolean {
-    return state['features/base/config'].enableWebHIDFeature || false;
+    return state["features/base/config"].enableWebHIDFeature || false;
 }
 
 /**
@@ -71,7 +74,10 @@ export function getWebHIDFeatureConfig(state: IReduxState): boolean {
  * @param {Object|Array<string>} state - The redux state or the array with the enabled buttons.
  * @returns {boolean} - True if the button is enabled and false otherwise.
  */
-export function isToolbarButtonEnabled(buttonName: string, state: IReduxState | Array<string>) {
+export function isToolbarButtonEnabled(
+    buttonName: string,
+    state: IReduxState | Array<string>
+) {
     const buttons = Array.isArray(state) ? state : getToolbarButtons(state);
 
     return buttons.includes(buttonName);
@@ -84,7 +90,10 @@ export function isToolbarButtonEnabled(buttonName: string, state: IReduxState | 
  * @returns {boolean}
  */
 export function areAudioLevelsEnabled(state: IReduxState): boolean {
-    return !state['features/base/config'].disableAudioLevels && JitsiMeetJS.isCollectingLocalStats();
+    return (
+        !state["features/base/config"].disableAudioLevels &&
+        JitsiMeetJS.isCollectingLocalStats()
+    );
 }
 
 /**
@@ -97,33 +106,38 @@ export function _setDeeplinkingDefaults(deeplinking: IDeeplinkingConfig) {
     const {
         desktop = {} as IDeeplinkingPlatformConfig,
         android = {} as IDeeplinkingMobileConfig,
-        ios = {} as IDeeplinkingMobileConfig
+        ios = {} as IDeeplinkingMobileConfig,
     } = deeplinking;
 
-    desktop.appName ='CMeet';
+    desktop.appName = "C-Meet";
 
-    ios.appName = ios.appName || 'CMeet';
-    ios.appScheme = ios.appScheme || 'org.jitsi.meet';
-    ios.downloadLink = ios.downloadLink
-        || 'https://itunes.apple.com/us/app/jitsi-meet/id1165103905';
+    ios.appName = ios.appName || "C-Meet";
+    ios.appScheme = ios.appScheme || "org.jitsi.meet";
+    ios.downloadLink =
+        ios.downloadLink ||
+        "https://itunes.apple.com/us/app/jitsi-meet/id1165103905";
     if (ios.dynamicLink) {
-        ios.dynamicLink.apn = ios.dynamicLink.apn || 'org.jitsi.meet';
-        ios.dynamicLink.appCode = ios.dynamicLink.appCode || 'w2atb';
-        ios.dynamicLink.ibi = ios.dynamicLink.ibi || 'com.atlassian.JitsiMeet.ios';
-        ios.dynamicLink.isi = ios.dynamicLink.isi || '1165103905';
+        ios.dynamicLink.apn = ios.dynamicLink.apn || "org.jitsi.meet";
+        ios.dynamicLink.appCode = ios.dynamicLink.appCode || "w2atb";
+        ios.dynamicLink.ibi =
+            ios.dynamicLink.ibi || "com.atlassian.JitsiMeet.ios";
+        ios.dynamicLink.isi = ios.dynamicLink.isi || "1165103905";
     }
 
-    android.appName = android.appName || 'CMeet';
-    android.appScheme = android.appScheme || 'org.jitsi.meet';
-    android.downloadLink = android.downloadLink
-        || 'https://play.google.com/store/apps/details?id=org.jitsi.meet';
-    android.appPackage = android.appPackage || 'org.jitsi.meet';
-    android.fDroidUrl = android.fDroidUrl || 'https://f-droid.org/en/packages/org.jitsi.meet/';
+    android.appName = android.appName || "C-Meet";
+    android.appScheme = android.appScheme || "org.jitsi.meet";
+    android.downloadLink =
+        android.downloadLink ||
+        "https://play.google.com/store/apps/details?id=org.jitsi.meet";
+    android.appPackage = android.appPackage || "org.jitsi.meet";
+    android.fDroidUrl =
+        android.fDroidUrl || "https://f-droid.org/en/packages/org.jitsi.meet/";
     if (android.dynamicLink) {
-        android.dynamicLink.apn = android.dynamicLink.apn || 'org.jitsi.meet';
-        android.dynamicLink.appCode = android.dynamicLink.appCode || 'w2atb';
-        android.dynamicLink.ibi = android.dynamicLink.ibi || 'com.atlassian.JitsiMeet.ios';
-        android.dynamicLink.isi = android.dynamicLink.isi || '1165103905';
+        android.dynamicLink.apn = android.dynamicLink.apn || "org.jitsi.meet";
+        android.dynamicLink.appCode = android.dynamicLink.appCode || "w2atb";
+        android.dynamicLink.ibi =
+            android.dynamicLink.ibi || "com.atlassian.JitsiMeet.ios";
+        android.dynamicLink.isi = android.dynamicLink.isi || "1165103905";
     }
 }
 
@@ -135,22 +149,22 @@ export function _setDeeplinkingDefaults(deeplinking: IDeeplinkingConfig) {
  * @returns {Array}
  */
 const buildButtonsArray = (
-        buttonsWithNotifyClick?: NotifyClickButton[],
-        customButtons?: {
-            icon: string;
-            id: string;
-            text: string;
-        }[]
+    buttonsWithNotifyClick?: NotifyClickButton[],
+    customButtons?: {
+        icon: string;
+        id: string;
+        text: string;
+    }[]
 ): NotifyClickButton[] => {
     const customButtonsWithNotifyClick = customButtons?.map(({ id }) => {
         return {
             key: id,
-            preventExecution: false
+            preventExecution: false,
         };
     });
 
     const buttons = Array.isArray(buttonsWithNotifyClick)
-        ? buttonsWithNotifyClick as NotifyClickButton[]
+        ? (buttonsWithNotifyClick as NotifyClickButton[])
         : [];
 
     if (customButtonsWithNotifyClick) {
@@ -167,14 +181,12 @@ const buildButtonsArray = (
  * @returns {Array} - The list of buttons.
  */
 export function getButtonsWithNotifyClick(
-        state: IReduxState
+    state: IReduxState
 ): NotifyClickButton[] {
-    const { buttonsWithNotifyClick, customToolbarButtons } = state['features/base/config'];
+    const { buttonsWithNotifyClick, customToolbarButtons } =
+        state["features/base/config"];
 
-    return buildButtonsArray(
-        buttonsWithNotifyClick,
-        customToolbarButtons
-    );
+    return buildButtonsArray(buttonsWithNotifyClick, customToolbarButtons);
 }
 
 /**
@@ -184,9 +196,12 @@ export function getButtonsWithNotifyClick(
  * @returns {Array} - The list of participant menu buttons.
  */
 export function getParticipantMenuButtonsWithNotifyClick(
-        state: IReduxState
+    state: IReduxState
 ): NotifyClickButton[] {
-    const { participantMenuButtonsWithNotifyClick, customParticipantMenuButtons } = state['features/base/config'];
+    const {
+        participantMenuButtonsWithNotifyClick,
+        customParticipantMenuButtons,
+    } = state["features/base/config"];
 
     return buildButtonsArray(
         participantMenuButtonsWithNotifyClick,
@@ -202,16 +217,17 @@ export function getParticipantMenuButtonsWithNotifyClick(
  * @returns {string|undefined}
  */
 export const getButtonNotifyMode = (
-        buttonKey: string,
-        buttonsWithNotifyClick?: NotifyClickButton[]
+    buttonKey: string,
+    buttonsWithNotifyClick?: NotifyClickButton[]
 ): string | undefined => {
     const notify = buttonsWithNotifyClick?.find(
         (btn: NotifyClickButton) =>
-            (typeof btn === 'string' && btn === buttonKey) || (typeof btn === 'object' && btn.key === buttonKey)
+            (typeof btn === "string" && btn === buttonKey) ||
+            (typeof btn === "object" && btn.key === buttonKey)
     );
 
     if (notify) {
-        return typeof notify === 'string' || notify.preventExecution
+        return typeof notify === "string" || notify.preventExecution
             ? NOTIFY_CLICK_MODE.PREVENT_AND_NOTIFY
             : NOTIFY_CLICK_MODE.ONLY_NOTIFY;
     }
