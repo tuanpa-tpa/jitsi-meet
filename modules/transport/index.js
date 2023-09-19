@@ -1,15 +1,14 @@
 // FIXME: change to '../API' when we update to webpack2. If we do this now all
 // files from API modules will be included in external_api.js.
-import { PostMessageTransportBackend, Transport } from '@jitsi/js-utils/transport';
-
-import { getJitsiMeetGlobalNS } from '../../react/features/base/util/helpers';
-import { API_ID } from '../API/constants';
-
-
-export {
+import {
     PostMessageTransportBackend,
-    Transport
-};
+    Transport,
+} from "@jitsi/js-utils/transport";
+
+import { getJitsiMeetGlobalNS } from "../../react/features/base/util/helpers";
+import { API_ID } from "../API/constants";
+
+export { PostMessageTransportBackend, Transport };
 
 /**
  * Option for the default low level transport.
@@ -18,25 +17,27 @@ export {
  */
 const postisOptions = {};
 
-if (typeof API_ID === 'number') {
+if (typeof API_ID === "number") {
     postisOptions.scope = `jitsi_meet_external_api_${API_ID}`;
 }
 
 /**
- * The instance of Transport class that will be used by Jitsi Meet.
+ * The instance of Transport class that will be used by C-Meet.
  *
  * @type {Transport}
  */
 let transport;
 
 /**
- * Returns the instance of Transport class that will be used by Jitsi Meet.
+ * Returns the instance of Transport class that will be used by C-Meet.
  *
  * @returns {Transport}
  */
 export function getJitsiMeetTransport() {
     if (!transport) {
-        transport = new Transport({ backend: new PostMessageTransportBackend({ postisOptions }) });
+        transport = new Transport({
+            backend: new PostMessageTransportBackend({ postisOptions }),
+        });
     }
 
     return transport;
@@ -48,5 +49,6 @@ export function getJitsiMeetTransport() {
  * @param {Object} externalTransportBackend - The new transport.
  * @returns {void}
  */
-getJitsiMeetGlobalNS().setExternalTransportBackend = externalTransportBackend =>
-    transport.setBackend(externalTransportBackend);
+getJitsiMeetGlobalNS().setExternalTransportBackend = (
+    externalTransportBackend
+) => transport.setBackend(externalTransportBackend);

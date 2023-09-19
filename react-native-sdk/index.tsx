@@ -1,7 +1,7 @@
 /* eslint-disable lines-around-comment,  no-undef, no-unused-vars  */
 
 // NB: This import must always come first.
-import './react/bootstrap.native';
+import "./react/bootstrap.native";
 
 import React, {
     forwardRef,
@@ -9,14 +9,16 @@ import React, {
     useImperativeHandle,
     useLayoutEffect,
     useRef,
-    useState
-} from 'react';
-import { View, ViewStyle } from 'react-native';
+    useState,
+} from "react";
+import { View, ViewStyle } from "react-native";
 
-import { appNavigate } from './react/features/app/actions.native';
-import { App } from './react/features/app/components/App.native';
-import { setAudioMuted, setVideoMuted } from './react/features/base/media/actions';
-
+import { appNavigate } from "./react/features/app/actions.native";
+import { App } from "./react/features/app/components/App.native";
+import {
+    setAudioMuted,
+    setVideoMuted,
+} from "./react/features/base/media/actions";
 
 interface IEventListeners {
     onConferenceBlurred?: Function;
@@ -47,10 +49,10 @@ interface IAppProps {
 }
 
 /**
- * Main React Native SDK component that displays a Jitsi Meet conference and gets all required params as props
+ * Main React Native SDK component that displays a C-Meet conference and gets all required params as props
  */
 export const JitsiMeeting = forwardRef((props: IAppProps, ref) => {
-    const [ appProps, setAppProps ] = useState({});
+    const [appProps, setAppProps] = useState({});
     const app = useRef(null);
     const {
         config,
@@ -60,7 +62,7 @@ export const JitsiMeeting = forwardRef((props: IAppProps, ref) => {
         serverURL,
         style,
         token,
-        userInfo
+        userInfo,
     } = props;
 
     // eslint-disable-next-line arrow-body-style
@@ -70,57 +72,56 @@ export const JitsiMeeting = forwardRef((props: IAppProps, ref) => {
 
             dispatch(appNavigate(undefined));
         },
-        setAudioMuted: muted => {
+        setAudioMuted: (muted) => {
             const dispatch = app.current.state.store.dispatch;
 
             dispatch(setAudioMuted(muted));
         },
-        setVideoMuted: muted => {
+        setVideoMuted: (muted) => {
             const dispatch = app.current.state.store.dispatch;
 
             dispatch(setVideoMuted(muted));
-        }
+        },
     }));
 
-    useEffect(
-        () => {
-            const urlObj = {
-                config,
-                jwt: token
+    useEffect(() => {
+        const urlObj = {
+            config,
+            jwt: token,
+        };
+
+        let urlProps;
+
+        if (room.includes("://")) {
+            urlProps = {
+                ...urlObj,
+                url: room,
             };
+        } else {
+            urlProps = {
+                ...urlObj,
+                room,
+                serverURL,
+            };
+        }
 
-            let urlProps;
-
-            if (room.includes('://')) {
-                urlProps = {
-                    ...urlObj,
-                    url: room
-                };
-            } else {
-                urlProps = {
-                    ...urlObj,
-                    room,
-                    serverURL
-                };
-            }
-
-            setAppProps({
-                'flags': flags,
-                'rnSdkHandlers': {
-                    onConferenceBlurred: eventListeners?.onConferenceBlurred,
-                    onConferenceFocused: eventListeners?.onConferenceFocused,
-                    onConferenceJoined: eventListeners?.onConferenceJoined,
-                    onConferenceWillJoin: eventListeners?.onConferenceWillJoin,
-                    onConferenceLeft: eventListeners?.onConferenceLeft,
-                    onEnterPictureInPicture: eventListeners?.onEnterPictureInPicture,
-                    onParticipantJoined: eventListeners?.onParticipantJoined,
-                    onReadyToClose: eventListeners?.onReadyToClose
-                },
-                'url': urlProps,
-                'userInfo': userInfo
-            });
-        }, []
-    );
+        setAppProps({
+            flags: flags,
+            rnSdkHandlers: {
+                onConferenceBlurred: eventListeners?.onConferenceBlurred,
+                onConferenceFocused: eventListeners?.onConferenceFocused,
+                onConferenceJoined: eventListeners?.onConferenceJoined,
+                onConferenceWillJoin: eventListeners?.onConferenceWillJoin,
+                onConferenceLeft: eventListeners?.onConferenceLeft,
+                onEnterPictureInPicture:
+                    eventListeners?.onEnterPictureInPicture,
+                onParticipantJoined: eventListeners?.onParticipantJoined,
+                onReadyToClose: eventListeners?.onReadyToClose,
+            },
+            url: urlProps,
+            userInfo: userInfo,
+        });
+    }, []);
 
     // eslint-disable-next-line arrow-body-style
     useLayoutEffect(() => {
@@ -128,7 +129,7 @@ export const JitsiMeeting = forwardRef((props: IAppProps, ref) => {
          * When you close the component you need to reset it.
          * In some cases it needs to be added as the parent component may have been destroyed.
          * Without this change the call remains active without having the jitsi screen.
-        */
+         */
         return () => {
             const dispatch = app.current?.state?.store?.dispatch;
 
@@ -137,10 +138,8 @@ export const JitsiMeeting = forwardRef((props: IAppProps, ref) => {
     }, []);
 
     return (
-        <View style = { style as ViewStyle }>
-            <App
-                { ...appProps }
-                ref = { app } />
+        <View style={style as ViewStyle}>
+            <App {...appProps} ref={app} />
         </View>
     );
 });

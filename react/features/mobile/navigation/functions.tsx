@@ -1,19 +1,17 @@
-import React, { useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
-import { GestureResponderEvent, Platform } from 'react-native';
-import { useDispatch } from 'react-redux';
+import React, { useCallback } from "react";
+import { useTranslation } from "react-i18next";
+import { GestureResponderEvent, Platform } from "react-native";
+import { useDispatch } from "react-redux";
 
+import { appNavigate } from "../../app/actions.native";
+import { IStateful } from "../../base/app/types";
+import { PREJOIN_PAGE_ENABLED } from "../../base/flags/constants";
+import { getFeatureFlag } from "../../base/flags/functions";
+import { IconCloseLarge } from "../../base/icons/svg";
+import { toState } from "../../base/redux/functions";
+import { cancelKnocking } from "../../lobby/actions.native";
 
-import { appNavigate } from '../../app/actions.native';
-import { IStateful } from '../../base/app/types';
-import { PREJOIN_PAGE_ENABLED } from '../../base/flags/constants';
-import { getFeatureFlag } from '../../base/flags/functions';
-import { IconCloseLarge } from '../../base/icons/svg';
-import { toState } from '../../base/redux/functions';
-import { cancelKnocking } from '../../lobby/actions.native';
-
-import HeaderNavigationButton from './components/HeaderNavigationButton';
-
+import HeaderNavigationButton from "./components/HeaderNavigationButton";
 
 /**
  * Close icon/text button based on platform.
@@ -21,27 +19,26 @@ import HeaderNavigationButton from './components/HeaderNavigationButton';
  * @param {Function} goBack - Goes back to the previous screen function.
  * @returns {React.Component}
  */
-export function screenHeaderCloseButton(goBack: (e?: GestureResponderEvent | React.MouseEvent) => void) {
+export function screenHeaderCloseButton(
+    goBack: (e?: GestureResponderEvent | React.MouseEvent) => void
+) {
     const { t } = useTranslation();
 
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === "ios") {
         return (
             <HeaderNavigationButton
-                label = { t('dialog.close') }
-                onPress = { goBack } />
+                label={t("dialog.close")}
+                onPress={goBack}
+            />
         );
     }
 
-    return (
-        <HeaderNavigationButton
-            onPress = { goBack }
-            src = { IconCloseLarge } />
-    );
+    return <HeaderNavigationButton onPress={goBack} src={IconCloseLarge} />;
 }
 
 /**
  * Determines whether the {@code Prejoin page} is enabled by the app itself
- * (e.g. Programmatically via the Jitsi Meet SDK for Android and iOS).
+ * (e.g. Programmatically via the C-Meet SDK for Android and iOS).
  *
  * @param {Function|Object} stateful - The redux state or {@link getState}
  * function.
@@ -50,10 +47,14 @@ export function screenHeaderCloseButton(goBack: (e?: GestureResponderEvent | Rea
  */
 export function isPrejoinPageEnabled(stateful: IStateful) {
     const state = toState(stateful);
-    const { prejoinConfig } = state['features/base/config'];
+    const { prejoinConfig } = state["features/base/config"];
     const isPrejoinEnabledInConfig = prejoinConfig?.enabled;
 
-    return getFeatureFlag(state, PREJOIN_PAGE_ENABLED, isPrejoinEnabledInConfig ?? true);
+    return getFeatureFlag(
+        state,
+        PREJOIN_PAGE_ENABLED,
+        isPrejoinEnabledInConfig ?? true
+    );
 }
 
 /**
@@ -67,21 +68,18 @@ export function lobbyScreenHeaderCloseButton() {
     const goBack = useCallback(() => {
         dispatch(cancelKnocking());
         dispatch(appNavigate(undefined));
-    }, [ dispatch ]);
+    }, [dispatch]);
 
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === "ios") {
         return (
             <HeaderNavigationButton
-                label = { t('dialog.close') }
-                onPress = { goBack } />
+                label={t("dialog.close")}
+                onPress={goBack}
+            />
         );
     }
 
-    return (
-        <HeaderNavigationButton
-            onPress = { goBack }
-            src = { IconCloseLarge } />
-    );
+    return <HeaderNavigationButton onPress={goBack} src={IconCloseLarge} />;
 }
 
 /**
@@ -93,7 +91,7 @@ export function lobbyScreenHeaderCloseButton() {
  */
 export function shouldEnableAutoKnock(stateful: IStateful) {
     const state = toState(stateful);
-    const { displayName } = state['features/base/settings'];
+    const { displayName } = state["features/base/settings"];
 
     if (isPrejoinPageEnabled(state)) {
         if (displayName) {

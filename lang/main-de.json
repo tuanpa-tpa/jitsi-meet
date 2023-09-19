@@ -492,7 +492,7 @@
         "answer": "Antworten",
         "audioCallTitle": "Eingehender Anruf",
         "decline": "OK",
-        "productLabel": "von Jitsi Meet",
+        "productLabel": "von C-Meet",
         "videoCallTitle": "Eingehender Videoanruf"
     },
     "info": {
@@ -1449,7 +1449,7 @@
         "go": "Los",
         "goSmall": "Los",
         "headerSubtitle": "Sichere und hochqualitative Meetings",
-        "headerTitle": "Jitsi Meet",
+        "headerTitle": "C-Meet",
         "info": "Einwahlinformationen",
         "jitsiOnMobile": "Jitsi unterwegs – einfach unsere Apps herunterladen und Meetings von überall starten",
         "join": "ERSTELLEN / BEITRETEN",
@@ -1457,7 +1457,7 @@
             "calendar": "Kalender Logo",
             "desktopPreviewThumbnail": "Desktop-Vorschau Thumbnail",
             "googleLogo": "Google Logo",
-            "logoDeepLinking": "Jitsi Meet Logo",
+            "logoDeepLinking": "C-Meet Logo",
             "microsoftLogo": "Microsoft Logo",
             "policyLogo": "Richtlinienlogo"
         },

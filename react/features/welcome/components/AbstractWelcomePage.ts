@@ -63,6 +63,8 @@ interface IState {
     animateTimeoutId?: number;
     generateRoomNames?: string;
     generatedRoomName: string;
+    generatedRoomName2: string;
+    generatedRoomName3: string;
     hintBoxAnimation?: any;
     insecureRoomName: boolean;
     isSettingsScreenFocused?: boolean;
@@ -100,11 +102,13 @@ export class AbstractWelcomePage<P extends IProps> extends Component<
     state: IState = {
         animateTimeoutId: undefined,
         generatedRoomName: "",
+        generatedRoomName2: "",
+        generatedRoomName3: "",
         generateRoomNames: undefined,
         insecureRoomName: false,
         joining: false,
         room: "",
-        roomPlaceholder: "",
+        roomPlaceholder: "C-Meet xin chào",
         updateTimeoutId: undefined,
         _fieldFocused: false,
         isSettingsScreenFocused: false,
@@ -273,9 +277,10 @@ export class AbstractWelcomePage<P extends IProps> extends Component<
      * @returns {void}
      */
     _updateRoomName() {
-        const generatedRoomName = "C-Meet xin chào";
+        // const generatedRoomName = generateRoomWithoutSeparator();
+        const generatedRoomName = "C-Meet xin chào!";
         const roomPlaceholder = "";
-        const updateTimeoutId = window.setTimeout(this._updateRoomName, 10000);
+        const updateTimeoutId = window.setTimeout(this._updateRoomName, 5000);
 
         this._clearTimeouts();
         this.setState(

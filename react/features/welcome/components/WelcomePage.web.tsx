@@ -1,6 +1,6 @@
 import React from "react";
 import { connect } from "react-redux";
-
+import { env } from "../../../../ENV";
 import { isMobileBrowser } from "../../base/environment/utils";
 import { translate, translateToHTML } from "../../base/i18n/functions";
 import Icon from "../../base/icons/components/Icon";
@@ -142,7 +142,7 @@ class WelcomePage extends AbstractWelcomePage<IProps> {
         super.componentDidMount();
 
         document.body.classList.add("welcome-page");
-        document.title = interfaceConfig.APP_NAME;
+        document.title = env.APP_NAME;
 
         if (this.state.generateRoomNames) {
             this._updateRoomName();
