@@ -1,26 +1,30 @@
-import { Theme } from '@mui/material';
-import { withStyles } from '@mui/styles';
-import React, { Component } from 'react';
-import { WithTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
+import { Theme } from "@mui/material";
+import { withStyles } from "@mui/styles";
+import React, { Component } from "react";
+import { WithTranslation } from "react-i18next";
+import { connect } from "react-redux";
 
-import { IReduxState, IStore } from '../../../app/types';
-import { translate } from '../../../base/i18n/functions';
-import { withPixelLineHeight } from '../../../base/styles/functions.web';
-import Button from '../../../base/ui/components/web/Button';
-import Spinner from '../../../base/ui/components/web/Spinner';
-import { bootstrapCalendarIntegration, clearCalendarIntegration, signIn } from '../../../calendar-sync/actions';
-import MicrosoftSignInButton from '../../../calendar-sync/components/MicrosoftSignInButton';
-import { CALENDAR_TYPE } from '../../../calendar-sync/constants';
-import { isCalendarEnabled } from '../../../calendar-sync/functions';
-import GoogleSignInButton from '../../../google-api/components/GoogleSignInButton';
-import logger from '../../logger';
+import { IReduxState, IStore } from "../../../app/types";
+import { translate } from "../../../base/i18n/functions";
+import { withPixelLineHeight } from "../../../base/styles/functions.web";
+import Button from "../../../base/ui/components/web/Button";
+import Spinner from "../../../base/ui/components/web/Spinner";
+import {
+    bootstrapCalendarIntegration,
+    clearCalendarIntegration,
+    signIn,
+} from "../../../calendar-sync/actions";
+import MicrosoftSignInButton from "../../../calendar-sync/components/MicrosoftSignInButton";
+import { CALENDAR_TYPE } from "../../../calendar-sync/constants";
+import { isCalendarEnabled } from "../../../calendar-sync/functions";
+import GoogleSignInButton from "../../../google-api/components/GoogleSignInButton";
+import logger from "../../logger";
+import { env } from "../../../../../ENV";
 
 /**
  * The type of the React {@code Component} props of {@link CalendarTab}.
  */
 interface IProps extends WithTranslation {
-
     /**
      * The name given to this Jitsi Application.
      */
@@ -54,14 +58,13 @@ interface IProps extends WithTranslation {
     /**
      * Invoked to change the configured calendar integration.
      */
-    dispatch: IStore['dispatch'];
+    dispatch: IStore["dispatch"];
 }
 
 /**
  * The type of the React {@code Component} state of {@link CalendarTab}.
  */
 interface IState {
-
     /**
      * Whether or not any third party APIs are being loaded.
      */
@@ -71,20 +74,20 @@ interface IState {
 const styles = (theme: Theme) => {
     return {
         container: {
-            width: '100%',
-            display: 'flex',
-            flexDirection: 'column' as const,
-            alignItems: 'center',
-            justifyContent: 'center',
-            textAlign: 'center',
-            minHeight: '100px',
+            width: "100%",
+            display: "flex",
+            flexDirection: "column" as const,
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            minHeight: "100px",
             color: theme.palette.text01,
-            ...withPixelLineHeight(theme.typography.bodyShortRegular)
+            ...withPixelLineHeight(theme.typography.bodyShortRegular),
         },
 
         button: {
-            marginTop: theme.spacing(4)
-        }
+            marginTop: theme.spacing(4),
+        },
     };
 };
 
@@ -103,7 +106,7 @@ class CalendarTab extends Component<IProps, IState> {
         super(props);
 
         this.state = {
-            loading: true
+            loading: true,
         };
 
         // Bind event handlers so they are only bound once for every instance.
@@ -119,8 +122,11 @@ class CalendarTab extends Component<IProps, IState> {
      * @inheritdoc
      */
     componentDidMount() {
-        this.props.dispatch(bootstrapCalendarIntegration())
-            .catch((err: any) => logger.error('CalendarTab bootstrap failed', err))
+        this.props
+            .dispatch(bootstrapCalendarIntegration())
+            .catch((err: any) =>
+                logger.error("CalendarTab bootstrap failed", err)
+            )
             .then(() => this.setState({ loading: false }));
     }
 
@@ -142,11 +148,7 @@ class CalendarTab extends Component<IProps, IState> {
             view = this._renderSignInState();
         }
 
-        return (
-            <div className = { classes.container }>
-                { view }
-            </div>
-        );
+        return <div className={classes.container}>{view}</div>;
     }
 
     /**
@@ -204,9 +206,7 @@ class CalendarTab extends Component<IProps, IState> {
      * @returns {ReactElement}
      */
     _renderLoadingState() {
-        return (
-            <Spinner />
-        );
+        return <Spinner />;
     }
 
     /**
@@ -222,27 +222,30 @@ class CalendarTab extends Component<IProps, IState> {
             _enableGoogleIntegration,
             _enableMicrosoftIntegration,
             classes,
-            t
+            t,
         } = this.props;
 
         return (
             <>
                 <p>
-                    { t('settings.calendar.about',
-                        { appName: _appName || '' }) }
+                    {t("settings.calendar.about", { appName: _appName || "" })}
                 </p>
-                { _enableGoogleIntegration
-                    && <div className = { classes.button }>
+                {_enableGoogleIntegration && (
+                    <div className={classes.button}>
                         <GoogleSignInButton
-                            onClick = { this._onClickGoogle }
-                            text = { t('liveStreaming.signIn') } />
-                    </div> }
-                { _enableMicrosoftIntegration
-                    && <div className = { classes.button }>
+                            onClick={this._onClickGoogle}
+                            text={t("liveStreaming.signIn")}
+                        />
+                    </div>
+                )}
+                {_enableMicrosoftIntegration && (
+                    <div className={classes.button}>
                         <MicrosoftSignInButton
-                            onClick = { this._onClickMicrosoft }
-                            text = { t('settings.calendar.microsoftSignIn') } />
-                    </div> }
+                            onClick={this._onClickMicrosoft}
+                            text={t("settings.calendar.microsoftSignIn")}
+                        />
+                    </div>
+                )}
             </>
         );
     }
@@ -259,13 +262,13 @@ class CalendarTab extends Component<IProps, IState> {
 
         return (
             <>
-                { t('settings.calendar.signedIn',
-                        { email: _profileEmail }) }
+                {t("settings.calendar.signedIn", { email: _profileEmail })}
                 <Button
-                    className = { classes.button }
-                    id = 'calendar_logout'
-                    label = { t('settings.calendar.disconnect') }
-                    onClick = { this._onClickDisconnect } />
+                    className={classes.button}
+                    id="calendar_logout"
+                    label={t("settings.calendar.disconnect")}
+                    onClick={this._onClickDisconnect}
+                />
             </>
         );
     }
@@ -286,22 +289,24 @@ class CalendarTab extends Component<IProps, IState> {
  * }}
  */
 function _mapStateToProps(state: IReduxState) {
-    const calendarState = state['features/calendar-sync'] || {};
-    const {
-        googleApiApplicationClientID,
-        microsoftApiApplicationClientID
-    } = state['features/base/config'];
+    const calendarState = state["features/calendar-sync"] || {};
+    const { googleApiApplicationClientID, microsoftApiApplicationClientID } =
+        state["features/base/config"];
     const calendarEnabled = isCalendarEnabled(state);
 
     return {
-        _appName: interfaceConfig.APP_NAME,
+        _appName: env.APP_NAME,
         _enableGoogleIntegration: Boolean(
-            calendarEnabled && googleApiApplicationClientID),
+            calendarEnabled && googleApiApplicationClientID
+        ),
         _enableMicrosoftIntegration: Boolean(
-            calendarEnabled && microsoftApiApplicationClientID),
+            calendarEnabled && microsoftApiApplicationClientID
+        ),
         _isConnectedToCalendar: calendarState.integrationReady,
-        _profileEmail: calendarState.profileEmail
+        _profileEmail: calendarState.profileEmail,
     };
 }
 
-export default withStyles(styles)(translate(connect(_mapStateToProps)(CalendarTab)));
+export default withStyles(styles)(
+    translate(connect(_mapStateToProps)(CalendarTab))
+);

@@ -1,20 +1,21 @@
-import { connect } from 'react-redux';
+import { connect } from "react-redux";
 
-import { IReduxState } from '../../app/types';
-import { getMultipleVideoSendingSupportFeatureFlag } from '../../base/config/functions.any';
-import { translate } from '../../base/i18n/functions';
-import { IconImage } from '../../base/icons/svg';
-import AbstractButton, { IProps as AbstractButtonProps } from '../../base/toolbox/components/AbstractButton';
-import { isScreenVideoShared } from '../../screen-share/functions';
-import { openSettingsDialog } from '../../settings/actions';
-import { SETTINGS_TABS } from '../../settings/constants';
-import { checkBlurSupport, checkVirtualBackgroundEnabled } from '../functions';
+import { IReduxState } from "../../app/types";
+import { getMultipleVideoSendingSupportFeatureFlag } from "../../base/config/functions.any";
+import { translate } from "../../base/i18n/functions";
+import { IconImage } from "../../base/icons/svg";
+import AbstractButton, {
+    IProps as AbstractButtonProps,
+} from "../../base/toolbox/components/AbstractButton";
+import { isScreenVideoShared } from "../../screen-share/functions";
+import { openSettingsDialog } from "../../settings/actions";
+import { SETTINGS_TABS } from "../../settings/constants";
+import { checkBlurSupport, checkVirtualBackgroundEnabled } from "../functions";
 
 /**
  * The type of the React {@code Component} props of {@link VideoBackgroundButton}.
  */
 interface IProps extends AbstractButtonProps {
-
     /**
      * True if the video background is blurred or false if it is not.
      */
@@ -25,10 +26,10 @@ interface IProps extends AbstractButtonProps {
  * An abstract implementation of a button that toggles the video background dialog.
  */
 class VideoBackgroundButton extends AbstractButton<IProps> {
-    accessibilityLabel = 'toolbar.accessibilityLabel.selectBackground';
+    accessibilityLabel = "toolbar.accessibilityLabel.selectBackground";
     icon = IconImage;
-    label = 'toolbar.selectBackground';
-    tooltip = 'toolbar.selectBackground';
+    label = "toolbar.selectBackground";
+    tooltip = "toolbar.selectBackground";
 
     /**
      * Handles clicking / pressing the button, and toggles the virtual background dialog
@@ -66,13 +67,15 @@ class VideoBackgroundButton extends AbstractButton<IProps> {
  * }}
  */
 function _mapStateToProps(state: IReduxState) {
-
     return {
-        _isBackgroundEnabled: Boolean(state['features/virtual-background'].backgroundEffectEnabled),
-        visible: checkBlurSupport()
-        && getMultipleVideoSendingSupportFeatureFlag(state)
-        && !isScreenVideoShared(state)
-        && checkVirtualBackgroundEnabled(state)
+        _isBackgroundEnabled: Boolean(
+            state["features/virtual-background"].backgroundEffectEnabled
+        ),
+        visible:
+            checkBlurSupport() &&
+            getMultipleVideoSendingSupportFeatureFlag(state) &&
+            !isScreenVideoShared(state) &&
+            checkVirtualBackgroundEnabled(state),
     };
 }
 

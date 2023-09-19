@@ -1,8 +1,8 @@
-import { IStateful } from '../base/app/types';
-import { toState } from '../base/redux/functions';
-import { getServerURL } from '../base/settings/functions.web';
+import { IStateful } from "../base/app/types";
+import { toState } from "../base/redux/functions";
+import { getServerURL } from "../base/settings/functions.web";
 
-export * from './functions.any';
+export * from "./functions.any";
 
 /**
  * Retrieves the default URL for the app. This can either come from a prop to

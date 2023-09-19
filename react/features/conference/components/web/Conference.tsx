@@ -1,44 +1,44 @@
-import _ from 'lodash';
-import React from 'react';
-import { WithTranslation } from 'react-i18next';
-import { connect as reactReduxConnect } from 'react-redux';
+import _ from "lodash";
+import React from "react";
+import { WithTranslation } from "react-i18next";
+import { connect as reactReduxConnect } from "react-redux";
 
 // @ts-expect-error
-import VideoLayout from '../../../../../modules/UI/videolayout/VideoLayout';
-import { IReduxState, IStore } from '../../../app/types';
-import { getConferenceNameForTitle } from '../../../base/conference/functions';
-import { hangup } from '../../../base/connection/actions.web';
-import { isMobileBrowser } from '../../../base/environment/utils';
-import { translate } from '../../../base/i18n/functions';
-import { setColorAlpha } from '../../../base/util/helpers';
-import Chat from '../../../chat/components/web/Chat';
-import MainFilmstrip from '../../../filmstrip/components/web/MainFilmstrip';
-import ScreenshareFilmstrip from '../../../filmstrip/components/web/ScreenshareFilmstrip';
-import StageFilmstrip from '../../../filmstrip/components/web/StageFilmstrip';
-import CalleeInfoContainer from '../../../invite/components/callee-info/CalleeInfoContainer';
-import LargeVideo from '../../../large-video/components/LargeVideo.web';
-import LobbyScreen from '../../../lobby/components/web/LobbyScreen';
-import { getIsLobbyVisible } from '../../../lobby/functions';
-import { getOverlayToRender } from '../../../overlay/functions.web';
-import ParticipantsPane from '../../../participants-pane/components/web/ParticipantsPane';
-import Prejoin from '../../../prejoin/components/web/Prejoin';
-import { isPrejoinPageVisible } from '../../../prejoin/functions';
-import { toggleToolboxVisible } from '../../../toolbox/actions.any';
-import { fullScreenChanged, showToolbox } from '../../../toolbox/actions.web';
-import JitsiPortal from '../../../toolbox/components/web/JitsiPortal';
-import Toolbox from '../../../toolbox/components/web/Toolbox';
-import { LAYOUT_CLASSNAMES } from '../../../video-layout/constants';
-import { getCurrentLayout } from '../../../video-layout/functions.any';
-import { init } from '../../actions.web';
-import { maybeShowSuboptimalExperienceNotification } from '../../functions.web';
+import VideoLayout from "../../../../../modules/UI/videolayout/VideoLayout";
+import { IReduxState, IStore } from "../../../app/types";
+import { getConferenceNameForTitle } from "../../../base/conference/functions";
+import { hangup } from "../../../base/connection/actions.web";
+import { isMobileBrowser } from "../../../base/environment/utils";
+import { translate } from "../../../base/i18n/functions";
+import { setColorAlpha } from "../../../base/util/helpers";
+import Chat from "../../../chat/components/web/Chat";
+import MainFilmstrip from "../../../filmstrip/components/web/MainFilmstrip";
+import ScreenshareFilmstrip from "../../../filmstrip/components/web/ScreenshareFilmstrip";
+import StageFilmstrip from "../../../filmstrip/components/web/StageFilmstrip";
+import CalleeInfoContainer from "../../../invite/components/callee-info/CalleeInfoContainer";
+import LargeVideo from "../../../large-video/components/LargeVideo.web";
+import LobbyScreen from "../../../lobby/components/web/LobbyScreen";
+import { getIsLobbyVisible } from "../../../lobby/functions";
+import { getOverlayToRender } from "../../../overlay/functions.web";
+import ParticipantsPane from "../../../participants-pane/components/web/ParticipantsPane";
+import Prejoin from "../../../prejoin/components/web/Prejoin";
+import { isPrejoinPageVisible } from "../../../prejoin/functions";
+import { toggleToolboxVisible } from "../../../toolbox/actions.any";
+import { fullScreenChanged, showToolbox } from "../../../toolbox/actions.web";
+import JitsiPortal from "../../../toolbox/components/web/JitsiPortal";
+import Toolbox from "../../../toolbox/components/web/Toolbox";
+import { LAYOUT_CLASSNAMES } from "../../../video-layout/constants";
+import { getCurrentLayout } from "../../../video-layout/functions.any";
+import { init } from "../../actions.web";
+import { maybeShowSuboptimalExperienceNotification } from "../../functions.web";
 import {
     AbstractConference,
-    abstractMapStateToProps
-} from '../AbstractConference';
-import type { AbstractProps } from '../AbstractConference';
-
-import ConferenceInfo from './ConferenceInfo';
-import { default as Notice } from './Notice';
+    abstractMapStateToProps,
+} from "../AbstractConference";
+import type { AbstractProps } from "../AbstractConference";
+import { env } from "../../../../../ENV";
+import ConferenceInfo from "./ConferenceInfo";
+import { default as Notice } from "./Notice";
 
 /**
  * DOM events for when full screen mode has changed. Different browsers need
@@ -48,16 +48,15 @@ import { default as Notice } from './Notice';
  * @type {Array<string>}
  */
 const FULL_SCREEN_EVENTS = [
-    'webkitfullscreenchange',
-    'mozfullscreenchange',
-    'fullscreenchange'
+    "webkitfullscreenchange",
+    "mozfullscreenchange",
+    "fullscreenchange",
 ];
 
 /**
  * The type of the React {@code Component} props of {@link Conference}.
  */
 interface IProps extends AbstractProps, WithTranslation {
-
     /**
      * The alpha(opacity) of the background.
      */
@@ -99,7 +98,7 @@ interface IProps extends AbstractProps, WithTranslation {
      */
     _showPrejoin: boolean;
 
-    dispatch: IStore['dispatch'];
+    dispatch: IStore["dispatch"];
 }
 
 /**
@@ -130,16 +129,18 @@ class Conference extends AbstractConference<IProps, any> {
             100,
             {
                 leading: true,
-                trailing: false
-            });
+                trailing: false,
+            }
+        );
 
         this._onMouseMove = _.throttle(
-            event => this._originalOnMouseMove(event),
+            (event) => this._originalOnMouseMove(event),
             _mouseMoveCallbackInterval,
             {
                 leading: true,
-                trailing: false
-            });
+                trailing: false,
+            }
+        );
 
         // Bind event handler so it is only bound once for every instance.
         this._onFullScreenChange = this._onFullScreenChange.bind(this);
@@ -153,7 +154,7 @@ class Conference extends AbstractConference<IProps, any> {
      * @inheritdoc
      */
     componentDidMount() {
-        document.title = `${this.props._roomName} | ${interfaceConfig.APP_NAME}`;
+        document.title = `${this.props._roomName} | ${env.APP_NAME}`;
         this._start();
     }
 
@@ -164,8 +165,10 @@ class Conference extends AbstractConference<IProps, any> {
      * returns {void}
      */
     componentDidUpdate(prevProps: IProps) {
-        if (this.props._shouldDisplayTileView
-            === prevProps._shouldDisplayTileView) {
+        if (
+            this.props._shouldDisplayTileView ===
+            prevProps._shouldDisplayTileView
+        ) {
             return;
         }
 
@@ -185,8 +188,9 @@ class Conference extends AbstractConference<IProps, any> {
     componentWillUnmount() {
         APP.UI.unbindEvents();
 
-        FULL_SCREEN_EVENTS.forEach(name =>
-            document.removeEventListener(name, this._onFullScreenChange));
+        FULL_SCREEN_EVENTS.forEach((name) =>
+            document.removeEventListener(name, this._onFullScreenChange)
+        );
 
         APP.conference.isJoined() && this.props.dispatch(hangup());
     }
@@ -205,59 +209,70 @@ class Conference extends AbstractConference<IProps, any> {
             _overflowDrawer,
             _showLobby,
             _showPrejoin,
-            t
+            t,
         } = this.props;
 
         return (
             <div
-                id = 'layout_wrapper'
-                onMouseEnter = { this._onMouseEnter }
-                onMouseLeave = { this._onMouseLeave }
-                onMouseMove = { this._onMouseMove }
-                ref = { this._setBackground }>
+                id="layout_wrapper"
+                onMouseEnter={this._onMouseEnter}
+                onMouseLeave={this._onMouseLeave}
+                onMouseMove={this._onMouseMove}
+                ref={this._setBackground}
+            >
                 <Chat />
                 <div
-                    className = { _layoutClassName }
-                    id = 'videoconference_page'
-                    onMouseMove = { isMobileBrowser() ? undefined : this._onShowToolbar }>
+                    className={_layoutClassName}
+                    id="videoconference_page"
+                    onMouseMove={
+                        isMobileBrowser() ? undefined : this._onShowToolbar
+                    }
+                >
                     <ConferenceInfo />
                     <Notice />
                     <div
-                        id = 'videospace'
-                        onTouchStart = { this._onVidespaceTouchStart }>
+                        id="videospace"
+                        onTouchStart={this._onVidespaceTouchStart}
+                    >
                         <LargeVideo />
-                        {
-                            _showPrejoin || _showLobby || (<>
+                        {_showPrejoin || _showLobby || (
+                            <>
                                 <StageFilmstrip />
                                 <ScreenshareFilmstrip />
                                 <MainFilmstrip />
-                            </>)
-                        }
+                            </>
+                        )}
                     </div>
 
-                    { _showPrejoin || _showLobby || (
+                    {_showPrejoin || _showLobby || (
                         <>
                             <span
-                                aria-level = { 1 }
-                                className = 'sr-only'
-                                role = 'heading'>
-                                { t('toolbar.accessibilityLabel.heading') }
+                                aria-level={1}
+                                className="sr-only"
+                                role="heading"
+                            >
+                                {t("toolbar.accessibilityLabel.heading")}
                             </span>
                             <Toolbox />
                         </>
                     )}
 
-                    {_notificationsVisible && !_isAnyOverlayVisible && (_overflowDrawer
-                        ? <JitsiPortal className = 'notification-portal'>
-                            {this.renderNotificationsContainer({ portal: true })}
-                        </JitsiPortal>
-                        : this.renderNotificationsContainer())
-                    }
+                    {_notificationsVisible &&
+                        !_isAnyOverlayVisible &&
+                        (_overflowDrawer ? (
+                            <JitsiPortal className="notification-portal">
+                                {this.renderNotificationsContainer({
+                                    portal: true,
+                                })}
+                            </JitsiPortal>
+                        ) : (
+                            this.renderNotificationsContainer()
+                        ))}
 
                     <CalleeInfoContainer />
 
-                    { _showPrejoin && <Prejoin />}
-                    { _showLobby && <LobbyScreen />}
+                    {_showPrejoin && <Prejoin />}
+                    {_showLobby && <LobbyScreen />}
                 </div>
                 <ParticipantsPane />
             </div>
@@ -281,12 +296,18 @@ class Conference extends AbstractConference<IProps, any> {
 
         if (this.props._backgroundAlpha !== undefined) {
             const elemColor = element.style.background;
-            const alphaElemColor = setColorAlpha(elemColor, this.props._backgroundAlpha);
+            const alphaElemColor = setColorAlpha(
+                elemColor,
+                this.props._backgroundAlpha
+            );
 
             element.style.background = alphaElemColor;
             if (element.parentElement) {
                 const parentColor = element.parentElement.style.background;
-                const alphaParentColor = setColorAlpha(parentColor, this.props._backgroundAlpha);
+                const alphaParentColor = setColorAlpha(
+                    parentColor,
+                    this.props._backgroundAlpha
+                );
 
                 element.parentElement.style.background = alphaParentColor;
             }
@@ -370,8 +391,9 @@ class Conference extends AbstractConference<IProps, any> {
         APP.UI.registerListeners();
         APP.UI.bindEvents();
 
-        FULL_SCREEN_EVENTS.forEach(name =>
-            document.addEventListener(name, this._onFullScreenChange));
+        FULL_SCREEN_EVENTS.forEach((name) =>
+            document.addEventListener(name, this._onFullScreenChange)
+        );
 
         const { dispatch, t } = this.props;
 
@@ -390,19 +412,20 @@ class Conference extends AbstractConference<IProps, any> {
  * @returns {IProps}
  */
 function _mapStateToProps(state: IReduxState) {
-    const { backgroundAlpha, mouseMoveCallbackInterval } = state['features/base/config'];
-    const { overflowDrawer } = state['features/toolbox'];
+    const { backgroundAlpha, mouseMoveCallbackInterval } =
+        state["features/base/config"];
+    const { overflowDrawer } = state["features/toolbox"];
 
     return {
         ...abstractMapStateToProps(state),
         _backgroundAlpha: backgroundAlpha,
         _isAnyOverlayVisible: Boolean(getOverlayToRender(state)),
-        _layoutClassName: LAYOUT_CLASSNAMES[getCurrentLayout(state) ?? ''],
+        _layoutClassName: LAYOUT_CLASSNAMES[getCurrentLayout(state) ?? ""],
         _mouseMoveCallbackInterval: mouseMoveCallbackInterval,
         _overflowDrawer: overflowDrawer,
         _roomName: getConferenceNameForTitle(state),
         _showLobby: getIsLobbyVisible(state),
-        _showPrejoin: isPrejoinPageVisible(state)
+        _showPrejoin: isPrejoinPageVisible(state),
     };
 }
 
