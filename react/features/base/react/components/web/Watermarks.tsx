@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
-import { WithTranslation } from 'react-i18next';
-import { connect } from 'react-redux';
-
-import { IReduxState } from '../../../../app/types';
-import { isVpaasMeeting } from '../../../../jaas/functions';
-import { translate } from '../../../i18n/functions';
+import React, { Component } from "react";
+import { WithTranslation } from "react-i18next";
+import { connect } from "react-redux";
+import { env } from "../../../../../../ENV";
+import { IReduxState } from "../../../../app/types";
+import { isVpaasMeeting } from "../../../../jaas/functions";
+import { translate } from "../../../i18n/functions";
 
 /**
  * The CSS style of the element with CSS class {@code rightwatermark}.
@@ -12,14 +12,13 @@ import { translate } from '../../../i18n/functions';
  * @private
  */
 const _RIGHT_WATERMARK_STYLE = {
-    backgroundImage: 'url(images/rightwatermark.png)'
+    backgroundImage: "url(images/rightwatermark.png)",
 };
 
 /**
  * The type of the React {@code Component} props of {@link Watermarks}.
  */
 interface IProps extends WithTranslation {
-
     /**
      * The link used to navigate to on logo click.
      */
@@ -50,7 +49,6 @@ interface IProps extends WithTranslation {
  * The type of the React {@code Component} state of {@link Watermarks}.
  */
 type State = {
-
     /**
      * The url to open when clicking the brand watermark.
      */
@@ -84,10 +82,11 @@ class Watermarks extends Component<IProps, State> {
         const showBrandWatermark = interfaceConfig.SHOW_BRAND_WATERMARK;
 
         this.state = {
-            brandWatermarkLink:
-                showBrandWatermark ? interfaceConfig.BRAND_WATERMARK_LINK : '',
+            brandWatermarkLink: showBrandWatermark
+                ? interfaceConfig.BRAND_WATERMARK_LINK
+                : "",
             showBrandWatermark,
-            showPoweredBy: interfaceConfig.SHOW_POWERED_BY
+            showPoweredBy: interfaceConfig.SHOW_POWERED_BY,
         };
     }
 
@@ -100,15 +99,9 @@ class Watermarks extends Component<IProps, State> {
     render() {
         return (
             <div>
-                {
-                    this._renderJitsiWatermark()
-                }
-                {
-                    this._renderBrandWatermark()
-                }
-                {
-                    this._renderPoweredBy()
-                }
+                {this._renderJitsiWatermark()}
+                {this._renderBrandWatermark()}
+                {this._renderPoweredBy()}
             </div>
         );
     }
@@ -125,18 +118,17 @@ class Watermarks extends Component<IProps, State> {
         if (this.state.showBrandWatermark) {
             reactElement = (
                 <div
-                    className = 'watermark rightwatermark'
-                    style = { _RIGHT_WATERMARK_STYLE } />
+                    className="watermark rightwatermark"
+                    style={_RIGHT_WATERMARK_STYLE}
+                />
             );
 
             const { brandWatermarkLink } = this.state;
 
             if (brandWatermarkLink) {
                 reactElement = (
-                    <a
-                        href = { brandWatermarkLink }
-                        target = '_new'>
-                        { reactElement }
+                    <a href={brandWatermarkLink} target="_new">
+                        {reactElement}
                     </a>
                 );
             }
@@ -152,13 +144,11 @@ class Watermarks extends Component<IProps, State> {
      * @returns {ReactElement|null}
      */
     _renderJitsiWatermark() {
-        const {
-            _logoLink,
-            _logoUrl,
-            _showJitsiWatermark
-        } = this.props;
+        const { _logoLink, _logoUrl, _showJitsiWatermark } = this.props;
         const { noMargins, t } = this.props;
-        const className = `watermark ${noMargins ? 'leftwatermarknomargin' : 'leftwatermark'}`;
+        const className = `watermark ${
+            noMargins ? "leftwatermarknomargin" : "leftwatermark"
+        }`;
 
         let reactElement = null;
 
@@ -167,21 +157,20 @@ class Watermarks extends Component<IProps, State> {
                 backgroundImage: `url(${_logoUrl})`,
                 maxWidth: 140,
                 maxHeight: 70,
-                position: _logoLink ? 'static' : 'absolute'
+                position: _logoLink ? "static" : "absolute",
             } as const;
 
-            reactElement = (<div
-                className = { className }
-                style = { style } />);
+            reactElement = <div className={className} style={style} />;
 
             if (_logoLink) {
                 reactElement = (
                     <a
-                        aria-label = { t('jitsiHome', { logo: interfaceConfig.APP_NAME }) }
-                        className = { className }
-                        href = { _logoLink }
-                        target = '_new'>
-                        { reactElement }
+                        aria-label={t("jitsiHome", { logo: env.APP_NAME })}
+                        className={className}
+                        href={"https://sec.cmcati.vn/"}
+                        target="_new"
+                    >
+                        {reactElement}
                     </a>
                 );
             }
@@ -202,10 +191,11 @@ class Watermarks extends Component<IProps, State> {
 
             return (
                 <a
-                    className = 'poweredby'
-                    href = 'http://jitsi.org'
-                    target = '_new'>
-                    <span>{ t('poweredby') } jitsi.org</span>
+                    className="poweredby"
+                    href="https://sec.cmcati.vn/"
+                    target="_new"
+                >
+                    <span>{t("poweredby")} https://sec.cmcati.vn/</span>
                 </a>
             );
         }
@@ -228,18 +218,14 @@ function _mapStateToProps(state: IReduxState, ownProps: any) {
         defaultBranding,
         useDynamicBrandingData,
         logoClickUrl,
-        logoImageUrl
-    } = state['features/dynamic-branding'];
-    const isValidRoom = state['features/base/conference'].room;
-    const { defaultLogoUrl } = state['features/base/config'];
-    const {
-        JITSI_WATERMARK_LINK,
-        SHOW_JITSI_WATERMARK
-    } = interfaceConfig;
-    let _showJitsiWatermark = (
-        customizationReady && !customizationFailed
-        && SHOW_JITSI_WATERMARK)
-    || !isValidRoom;
+        logoImageUrl,
+    } = state["features/dynamic-branding"];
+    const isValidRoom = state["features/base/conference"].room;
+    const { defaultLogoUrl } = state["features/base/config"];
+    const { JITSI_WATERMARK_LINK, SHOW_JITSI_WATERMARK } = interfaceConfig;
+    let _showJitsiWatermark =
+        (customizationReady && !customizationFailed && SHOW_JITSI_WATERMARK) ||
+        !isValidRoom;
     let _logoUrl: string | undefined = logoImageUrl;
     let _logoLink = logoClickUrl;
 
@@ -260,7 +246,7 @@ function _mapStateToProps(state: IReduxState, ownProps: any) {
     return {
         _logoLink,
         _logoUrl,
-        _showJitsiWatermark
+        _showJitsiWatermark,
     };
 }
 

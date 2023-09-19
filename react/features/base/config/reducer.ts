@@ -21,6 +21,7 @@ import {
 } from "./configType";
 import { TOOLBAR_BUTTONS } from "./constants";
 import { _cleanupConfig, _setDeeplinkingDefaults } from "./functions";
+import { env } from "../../../../ENV";
 
 /**
  * The initial state of the feature base/config when executing in a
@@ -350,7 +351,7 @@ function _translateInterfaceConfig(oldValue: IConfig) {
                     : undefined;
 
             if (deeplinking.desktop) {
-                deeplinking.desktop.appName = interfaceConfig.NATIVE_APP_NAME;
+                deeplinking.desktop.appName = env.APP_NAME;
             }
 
             deeplinking.hideLogo = Boolean(
