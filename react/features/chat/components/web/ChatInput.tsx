@@ -11,6 +11,11 @@ import Input from '../../../base/ui/components/web/Input';
 import { areSmileysDisabled } from '../../functions';
 
 import SmileysPanel from './SmileysPanel';
+import { Stomp, Client } from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
+import { CMEET_ENV } from "../../ENV"
+import { generateUUID } from '../../until/UUID';
+import { LocalStorageHandle } from '../../../../../helper/LocalStorageHandler';
 
 /**
  * The type of the React {@code Component} props of {@link ChatInput}.
@@ -36,6 +41,7 @@ interface IProps extends WithTranslation {
      * Callback to invoke on message send.
      */
     onSend: Function;
+    handleMessage: Function;
 }
 
 /**
@@ -61,11 +67,14 @@ interface IState {
  */
 class ChatInput extends Component<IProps, IState> {
     _textArea?: RefObject<HTMLTextAreaElement>;
-
     state = {
         message: '',
         showSmileysPanel: false
     };
+    // feature update
+    stompClient: any;
+    meetingId: any;
+    user: any;
 
     /**
      * Initializes a new {@code ChatInput} instance.
@@ -75,15 +84,72 @@ class ChatInput extends Component<IProps, IState> {
      */
     constructor(props: IProps) {
         super(props);
-
         this._textArea = React.createRef<HTMLTextAreaElement>();
-
-        // Bind event handlers so they are only bound once for every instance.
         this._onDetectSubmit = this._onDetectSubmit.bind(this);
         this._onMessageChange = this._onMessageChange.bind(this);
         this._onSmileySelect = this._onSmileySelect.bind(this);
         this._onSubmitMessage = this._onSubmitMessage.bind(this);
         this._toggleSmileysPanel = this._toggleSmileysPanel.bind(this);
+        this._oninit()
+        this.stompClient = new Client();
+        this.stompClient.webSocketFactory = () => {
+            return new SockJS(CMEET_ENV.urlWS);
+        };
+        this._onConnectWS();
+    }
+    _oninit() {
+        this.user = new LocalStorageHandle("features/base/settings").getByKey()
+        if(this.user.hasOwnProperty("id") || !this.user.id){
+            this.user.id = generateUUID();
+        }
+        console.log("user", this.user);
+        this.meetingId = window.location.href.split('/').at(-1)
+    }
+
+    async _onConnectWS() {
+        this.stompClient.onConnect = (frame: any) => {
+            console.log("Connected to WebSocket");
+            this._onHandleMessage()
+        };
+        this.stompClient.activate();
+    }
+
+
+    _onSendChatCMeet(content: String) {
+        if (this._isValidUUID(this.meetingId)) {
+            this._publicStomp(CMEET_ENV.public, {
+                content: content,
+                sender: this.user.displayName,
+                meetingId: this.meetingId,
+                timeSheetId: null,
+                userId: this.user.id,
+                avatar: CMEET_ENV.avatar,
+                fileExtension: null,
+                filePath: null,
+            })
+        }
+    }
+    _publicStomp(destination: String, body: any) {
+        this.stompClient.publish({
+            destination: destination,
+            body: JSON.stringify(body),
+        });
+    }
+    _onHandleMessage() {
+        this.stompClient.subscribe(CMEET_ENV.subrice, ({ body }: any) => {
+            const data = JSON.parse(body);
+            const { userId, meetingId } = data;
+            if (data.meetingId == meetingId && this.user.id != userId) {
+                this.props.handleMessage(data)
+            }
+        });
+    }
+    _isValidUUID(arg: any) {
+        const uuidRegex = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+        if (arg instanceof Array) {
+            return arg.every(x => uuidRegex.test(x))
+        }
+        return uuidRegex.test(arg)
     }
 
     /**
@@ -92,12 +158,15 @@ class ChatInput extends Component<IProps, IState> {
      * @inheritdoc
      */
     componentDidMount() {
+
         if (isMobileBrowser()) {
             // Ensure textarea is not focused when opening chat on mobile browser.
             this._textArea?.current && this._textArea.current.blur();
         } else {
             this._focus();
         }
+
+
     }
 
     /**
@@ -119,36 +188,36 @@ class ChatInput extends Component<IProps, IState> {
      */
     render() {
         return (
-            <div className = { `chat-input-container${this.state.message.trim().length ? ' populated' : ''}` }>
-                <div id = 'chat-input' >
+            <div className={`chat-input-container${this.state.message.trim().length ? ' populated' : ''}`}>
+                <div id='chat-input' >
                     {!this.props._areSmileysDisabled && this.state.showSmileysPanel && (
                         <div
-                            className = 'smiley-input'>
+                            className='smiley-input'>
                             <div
-                                className = 'smileys-panel' >
+                                className='smileys-panel' >
                                 <SmileysPanel
-                                    onSmileySelect = { this._onSmileySelect } />
+                                    onSmileySelect={this._onSmileySelect} />
                             </div>
                         </div>
                     )}
                     <Input
-                        className = 'chat-input'
-                        icon = { this.props._areSmileysDisabled ? undefined : IconFaceSmile }
-                        iconClick = { this._toggleSmileysPanel }
-                        id = 'chat-input-messagebox'
-                        maxRows = { 5 }
-                        onChange = { this._onMessageChange }
-                        onKeyPress = { this._onDetectSubmit }
-                        placeholder = { this.props.t('chat.messagebox') }
-                        ref = { this._textArea }
-                        textarea = { true }
-                        value = { this.state.message } />
+                        className='chat-input'
+                        icon={this.props._areSmileysDisabled ? undefined : IconFaceSmile}
+                        iconClick={this._toggleSmileysPanel}
+                        id='chat-input-messagebox'
+                        maxRows={5}
+                        onChange={this._onMessageChange}
+                        onKeyPress={this._onDetectSubmit}
+                        placeholder={this.props.t('chat.messagebox')}
+                        ref={this._textArea}
+                        textarea={true}
+                        value={this.state.message} />
                     <Button
-                        accessibilityLabel = { this.props.t('chat.sendButton') }
-                        disabled = { !this.state.message.trim() }
-                        icon = { IconSend }
-                        onClick = { this._onSubmitMessage }
-                        size = { isMobileBrowser() ? 'large' : 'medium' } />
+                        accessibilityLabel={this.props.t('chat.sendButton')}
+                        disabled={!this.state.message.trim()}
+                        icon={IconSend}
+                        onClick={this._onSubmitMessage}
+                        size={isMobileBrowser() ? 'large' : 'medium'} />
                 </div>
             </div>
         );
@@ -173,7 +242,9 @@ class ChatInput extends Component<IProps, IState> {
         const trimmed = this.state.message.trim();
 
         if (trimmed) {
+
             this.props.onSend(trimmed);
+            this._onSendChatCMeet(trimmed)
 
             this.setState({ message: '' });
 
@@ -182,6 +253,9 @@ class ChatInput extends Component<IProps, IState> {
         }
 
     }
+
+
+
 
     /**
      * Detects if enter has been pressed. If so, submit the message in the chat

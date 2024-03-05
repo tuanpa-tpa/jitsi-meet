@@ -1,19 +1,20 @@
 /* eslint-disable react/no-multi-comp */
 import { Route, useIsFocused } from '@react-navigation/native';
-import React, { Component, useEffect } from 'react';
+import React, { Component, useCallback, useEffect } from 'react';
 import { connect } from 'react-redux';
 
 import { IReduxState } from '../../../app/types';
 import { translate } from '../../../base/i18n/functions';
 import JitsiScreen from '../../../base/modal/components/JitsiScreen';
 import { TabBarLabelCounter } from '../../../mobile/navigation/components/TabBarLabelCounter';
-import { closeChat, sendMessage } from '../../actions.native';
+import { addMessage, closeChat, sendMessage } from '../../actions.native';
 import { IChatProps as AbstractProps } from '../../types';
 
 import ChatInputBar from './ChatInputBar';
 import MessageContainer from './MessageContainer';
 import MessageRecipient from './MessageRecipient';
 import styles from './styles';
+import { MESSAGE_TYPE_REMOTE } from '../../constants';
 
 interface IProps extends AbstractProps {
 
@@ -32,6 +33,7 @@ interface IProps extends AbstractProps {
  * Implements a React native component that renders the chat window (modal) of
  * the mobile client.
  */
+
 class Chat extends Component<IProps> {
 
     /**
@@ -47,6 +49,8 @@ class Chat extends Component<IProps> {
         this._onSendMessage = this._onSendMessage.bind(this);
     }
 
+
+
     /**
      * Implements React's {@link Component#render()}.
      *
@@ -55,17 +59,34 @@ class Chat extends Component<IProps> {
     render() {
         const { _messages, route } = this.props;
         const privateMessageRecipient = route?.params?.privateMessageRecipient;
+        const onHandleMessage = useCallback((data: any) => {
+            dispatch(addMessage({
+                displayName: data.sender,
+                hasRead: false,
+                id: data.id,
+                messageType: MESSAGE_TYPE_REMOTE,
+                message: data.content,
+                privateMessage: false,
+                lobbyChat: false,
+                recipient: '', //
+                timestamp: new Date(data.createdAt).getTime(),
+                isReaction: false
+            }));
+        }, []);
 
         return (
             <JitsiScreen
-                disableForcedKeyboardDismiss = { true }
-                hasBottomTextInput = { true }
-                hasTabNavigator = { true }
-                style = { styles.chatContainer }>
+                disableForcedKeyboardDismiss={true}
+                hasBottomTextInput={true}
+                hasTabNavigator={true}
+                style={styles.chatContainer}>
                 {/* @ts-ignore */}
-                <MessageContainer messages = { _messages } />
-                <MessageRecipient privateMessageRecipient = { privateMessageRecipient } />
-                <ChatInputBar onSend = { this._onSendMessage } />
+                <MessageContainer messages={_messages} />
+                <MessageRecipient privateMessageRecipient={privateMessageRecipient} />
+                <ChatInputBar
+                    onSend={this._onSendMessage}
+                    handleMessage={onHandleMessage}
+                />
             </JitsiScreen>
         );
     }
@@ -114,19 +135,19 @@ export default translate(connect(_mapStateToProps)((props: IProps) => {
         navigation?.setOptions({
             tabBarLabel: () => (
                 <TabBarLabelCounter
-                    activeUnreadNr = { unreadMessagesNr }
-                    isFocused = { isFocused }
-                    label = { t('chat.tabs.chat') }
-                    nbUnread = { _nbUnreadMessages } />
+                    activeUnreadNr={unreadMessagesNr}
+                    isFocused={isFocused}
+                    label={t('chat.tabs.chat')}
+                    nbUnread={_nbUnreadMessages} />
             )
         });
 
         return () => {
             isFocused && dispatch(closeChat());
         };
-    }, [ isFocused, _nbUnreadMessages ]);
+    }, [isFocused, _nbUnreadMessages]);
 
     return (
-        <Chat { ...props } />
+        <Chat {...props} />
     );
 }));

@@ -247,8 +247,8 @@ function getDevServerConfig() {
                 warnings: false,
             },
         },
-        host: "127.0.0.1",
-        port: 8443,
+        host: '127.0.0.1',
+        port: 4200,
         hot: true,
         proxy: {
             "/": {
